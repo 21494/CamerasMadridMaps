@@ -7,9 +7,25 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,23 +33,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import java.net.URL;
 import java.net.HttpURLConnection;
-
-import android.os.AsyncTask;
-import android.util.Log;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.AdapterView;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.Toast;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
+import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -64,12 +65,16 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
     private final String CAMERA_IMAGE_FILENAME = "camImg.jpg";
 
 
+    private FusedLocationProviderClient mFusedLocationClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView( R.layout.activity_cameras_madrid);
 
         checkLocationPermission();
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
 
 
@@ -371,12 +376,12 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
             }
             else {
                 //init Bluetooth adapter
-                finish();
 
 
             }
         }
     }
+
 
     public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults) {
         //Check if permission request response is from Location
