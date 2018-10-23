@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
 
     // File name (for saving and restoring the loaded image to/from internal storage):
     private final String CAMERA_IMAGE_FILENAME = "camImg.jpg";
+    //Holi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
