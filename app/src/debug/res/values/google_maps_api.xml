@@ -7,10 +7,10 @@
     https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=
                             85:00:45:80:1B:B5:C3:6A:BB:A3:F6:61:48:D3:BA:97:D6:F1:89:5B%3Bdte.masteriot.mdp.camerasmadrid
 
-    You can also add your credentials to an existing key, using these values: (DASFAS)
+    You can also add your credentials to an existing key, using these values: (DASASDArRFASQWQWA)
 
     Package name:
-    85:00:45:80:1B:B5:C3:6A:BB:A3:F6:61:48:D3:BA:97:D6:F1:89:5B (ASdFASDFASDFASDSF)
+    85:00:45:80:1B:B5:C3:6A:BB:A3:F6:61:48:D3:BA:97:D6:F1:89:5B (ASdFADFASDSF)
 
     SHA-1 certificate fingerprint:
     85:00:45:80:1B:B5:C3:6A:BB:A3:F6:61:48:D3:BA:97:D6:F1:89:5B
@@ -20,7 +20,7 @@
 
     Once you have your key (it starts with "AIza"), replace the "google_maps_key"
     string in this file.
-    asdasd
+    asdasdTRAD
     -->
 
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
