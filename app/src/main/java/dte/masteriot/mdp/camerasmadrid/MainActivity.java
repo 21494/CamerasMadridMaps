@@ -1,10 +1,13 @@
 package dte.masteriot.mdp.camerasmadrid;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -19,6 +22,7 @@ import java.net.URL;
 import java.net.HttpURLConnection;
 
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AdapterView;
@@ -40,6 +44,7 @@ import dte.masteriot.mdp.R;
 public class MainActivity extends AppCompatActivity implements ListView.OnItemClickListener {
 
     private static final String URL_CAMERAS = "http://informo.madrid.es/informo/tmadrid/CCTV.kml";
+    private static final int PERMISSION_REQUEST_FINE_LOCATION = 1;
     private ListView listView;
     private ImageView imageView;
     private ArrayAdapter adapter;
@@ -57,13 +62,16 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
 
     // File name (for saving and restoring the loaded image to/from internal storage):
     private final String CAMERA_IMAGE_FILENAME = "camImg.jpg";
-    //Holi
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView( R.layout.activity_cameras_madrid);
+
+        checkLocationPermission();
     }
+
 
     @Override
     protected void onResume() {
@@ -349,5 +357,47 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
                 listView.setEnabled(true); // Enable again the list.
             }
         }
+
+
+
     }
+
+    private void checkLocationPermission() {
+        //If Android version is M (6.0 API 23) or newer, check if it has Location permissions
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                //If Location permissions are not granted for the app, ask user for it! Request response will be received in the onRequestPermissionsResult.
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_FINE_LOCATION);
+            }
+            else {
+                //init Bluetooth adapter
+                finish();
+
+
+            }
+        }
+    }
+
+    public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults) {
+        //Check if permission request response is from Location
+        switch (requestCode) {
+            case PERMISSION_REQUEST_FINE_LOCATION: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //User granted permissions. Setup the scan settings
+                    Log.i( "MainActivity", "/+++++++++++++++++++++");
+                    Log.d("TAG", "fine location permission granted");
+                    Log.i( "MainActivity", "/+++++++++++++++++++++");
+
+
+                } else {
+                    //User denied Location permissions. Here you could warn the user that without
+                    //Location permissions the app is not able to scan for BLE devices and eventually
+                    //In this case we just close the app
+                    finish();
+                }
+                return;
+            }
+        }
+    }
+
 }
