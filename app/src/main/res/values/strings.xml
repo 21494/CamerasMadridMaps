@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Madrid Traffic Cameras</string>
+    <string name="title_activity_maps">Camera in the Map</string>
+    <string name="map">Map</string>
+    <string name="hybrid">Hybrid</string>
+    <string name="satellite">Satellite</string>
+</resources>
