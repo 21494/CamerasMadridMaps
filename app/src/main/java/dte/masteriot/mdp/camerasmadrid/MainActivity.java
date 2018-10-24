@@ -1,12 +1,14 @@
 package dte.masteriot.mdp.camerasmadrid;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,7 +22,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -64,17 +70,34 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
     // File name (for saving and restoring the loaded image to/from internal storage):
     private final String CAMERA_IMAGE_FILENAME = "camImg.jpg";
 
-
     private FusedLocationProviderClient mFusedLocationClient;
+    private LocationRequest mLocationRequest;
+    private LocationCallback mLocationCallback;
+    private Location location;
+    private boolean permisosLoc = false;
+    private boolean mRequestingLocationUpdates = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView( R.layout.activity_cameras_madrid);
 
-        checkLocationPermission();
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    Log.d("TAG", "Error al obtener ubicación en las actualizaciones.");
+                    return;
+                }
+                location = locationResult.getLastLocation();
+                int n = locationResult.getLocations().size();
+                Log.d("TAG", "Se han obtenido " + n +" ubicación en la actualización:");
+                Log.d("TAG", "Lat: " + location.getLatitude() + " Long: " + location.getLongitude());
+                stopLocationUpdates();
+            }
+        };
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        checkLocationPermission();
     }
 
 
@@ -108,6 +131,11 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
         // // update cameraListNames and cameraListURLS:
         DownloadKMLTask task = new DownloadKMLTask();
         task.execute( URL_CAMERAS );
+
+        if (!mRequestingLocationUpdates && permisosLoc) {
+            startLocationUpdates();
+        }
+
     }
 
     @Override
@@ -122,6 +150,9 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
             saveBitmapToFile(loaded_cam_image, CAMERA_IMAGE_FILENAME);
         }
         editor.commit();
+        if(mRequestingLocationUpdates && permisosLoc) {
+            stopLocationUpdates();
+        }
     }
 
     ///////////////////////////////////////////////////////////
@@ -362,9 +393,34 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
                 listView.setEnabled(true); // Enable again the list.
             }
         }
+    }
 
 
+    @SuppressLint("MissingPermission")
+    private void getLoc(){
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mFusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location _location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (_location != null) {
+                            Log.i( "MainActivity", "/+++++++++++++++++++++");
+                            Log.d("TAG", "Se pudo obtener la ultima localización: ");
+                            Log.d("LOC","Lat: "+_location.getLatitude()+" Long: "+ _location.getLongitude());
+                            Log.i( "MainActivity", "/+++++++++++++++++++++");
+                            location = _location;
+                            // Logic to handle location object
+                        } else {
+                            Log.i( "MainActivity", "/+++++++++++++++++++++");
+                            Log.d("TAG", "Error al obtener la localización");
+                            Log.i( "MainActivity", "/+++++++++++++++++++++");
+                            if(!mRequestingLocationUpdates)
+                                startLocationUpdates();
+                        }
 
+                    }
+                });
     }
 
     private void checkLocationPermission() {
@@ -375,9 +431,8 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_FINE_LOCATION);
             }
             else {
-                //init Bluetooth adapter
-
-
+                permisosLoc = true;
+                getLoc();
             }
         }
     }
@@ -392,7 +447,9 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
                     Log.i( "MainActivity", "/+++++++++++++++++++++");
                     Log.d("TAG", "fine location permission granted");
                     Log.i( "MainActivity", "/+++++++++++++++++++++");
+                    permisosLoc = true;
 
+                    getLoc();
 
                 } else {
                     //User denied Location permissions. Here you could warn the user that without
@@ -403,6 +460,24 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
                 return;
             }
         }
+    }
+
+    @SuppressLint("MissingPermission")
+    private void startLocationUpdates() {
+        Log.d("TAG", "Se han iniciado las actualizaciones de ubicación");
+        mRequestingLocationUpdates = true;
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(1000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setNumUpdates(2);
+        mFusedLocationClient.requestLocationUpdates(mLocationRequest,
+                mLocationCallback, null /* Looper */);
+    }
+
+    private void stopLocationUpdates() {
+        mRequestingLocationUpdates = false;
+        Log.d("TAG", "Se han parado las actualizaciones de ubicación");
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
     }
 
 }
