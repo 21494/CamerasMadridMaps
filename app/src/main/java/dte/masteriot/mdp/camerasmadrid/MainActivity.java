@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
-    private Location location;
+    public Location location;
     private boolean permisosLoc = false;
     private boolean mRequestingLocationUpdates = false;
 
@@ -172,8 +172,14 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
         Intent i = new Intent(MainActivity.this,MapsActivity.class);
         // Put as extras the coordinates string and the camera name corresponding to the currently
         // selected camera:
-        i.putExtra("coordinates", dataModel.getCameraCoordinatesAtPosition( selected_position ) );
+
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+        String location = String.valueOf(longitude) + "," + String.valueOf(latitude);
+
+        i.putExtra("coordinates", dataModel.getCameraCoordinatesAtPosition( selected_position ));
         i.putExtra("name", dataModel.getCameraNameAtPosition(selected_position));
+        i.putExtra("location", location);
         startActivity(i);
     }
 
