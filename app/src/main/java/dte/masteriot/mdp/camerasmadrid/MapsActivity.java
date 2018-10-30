@@ -10,7 +10,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -19,7 +21,7 @@ import dte.masteriot.mdp.R;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    String coordinates, cameraName, loc_coordinates;
+    String coordinates, cameraName, location;
     Float latitude, longitude, loc_latitude, loc_longitude;
     RadioGroup radGrp;
 
@@ -32,20 +34,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Intent i = getIntent();
         coordinates = i.getStringExtra("coordinates");
         cameraName = i.getStringExtra("name");
-        loc_coordinates = i.getStringExtra("location");
+        location = i.getStringExtra("location");
 
         radGrp = findViewById(R.id.grupoRadioMapType);
 
         String []coord = coordinates.split(","); // coord[0] --> longitude, coord[1] --> latitude
+        String []loc_coord = location.split(","); // coord[0] --> longitude, coord[1] --> latitude
         longitude = Float.parseFloat(coord[0]);
         latitude  = Float.parseFloat(coord[1]);
-
-        String[]loc_coord = coordinates.split(","); // coord[0] --> longitude, coord[1] --> latitude
         loc_longitude = Float.parseFloat(loc_coord[0]);
         loc_latitude  = Float.parseFloat(loc_coord[1]);
 
-        //Toast.makeText(this, "Latitude: " + coord[1] + " Longitude: " + coord[0], Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, "Latitude: " + loc_coord[1] + " Longitude: " + loc_coord[0], Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Latitude: " + coord[1] + " Longitude: " + coord[0], Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Location is " + location , Toast.LENGTH_SHORT).show();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -67,15 +68,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 
-        //LatLng cameraLatLng = new LatLng(latitude, longitude);
-        LatLng cameraLatLng = new LatLng(loc_latitude, loc_longitude);
-        LatLng locationLatLng = new LatLng(loc_latitude, loc_longitude);
+        LatLng cameraLatLng = new LatLng(latitude, longitude);
+        LatLng locLatLng = new LatLng(loc_latitude, loc_longitude);
 
         Marker mk = mMap.addMarker(new MarkerOptions().position(cameraLatLng).title(cameraName));
+        Marker mk_loc = mMap.addMarker(new MarkerOptions().position(locLatLng).title("Nosotros").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
         mk.showInfoWindow(); // Shows the name of the camera in the marker
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(cameraLatLng));
-        mMap.animateCamera( CameraUpdateFactory.zoomTo( 17.0f ) );
-        Marker mk_loc = mMap.addMarker(new MarkerOptions().position(locationLatLng).title("Yo"));
+        mk_loc.showInfoWindow(); // Shows the name of the camera in the marker
+
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder.include(mk.getPosition());
+        builder.include(mk_loc.getPosition());
+        LatLngBounds bounds = builder.build();
+
+        // offset from edges of the map in pixels
+        int padding = 100;
+
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(cameraLatLng));
+        //mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
+        //mMap.animateCamera( CameraUpdateFactory.zoomTo( 17.0f ) );
+        mMap.animateCamera( CameraUpdateFactory.newLatLngBounds(bounds, padding) );
 
         radGrp.setOnCheckedChangeListener(new radioGroupCheckedChanged() );
     }
