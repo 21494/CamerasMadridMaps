@@ -195,8 +195,8 @@ class getKML extends AsyncTask<String, Void, InputStream>
             line = MapsActivity.mMap.addPolyline(new PolylineOptions().add(ruta.get(i)).width(5).color(Color.BLUE));
         }
         MapsActivity.mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
     }
+    
 
     private ArrayList<LatLng> parseKML(InputStream is) {
         Document document = null;
