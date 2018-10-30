@@ -1,5 +1,4 @@
 package dte.masteriot.mdp.camerasmadrid;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -107,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
 
         // Get references to UI elements:
         imageView = findViewById(R.id.imageView);
+
         listView = findViewById(R.id.listView);
 
         // Recover shared preferences values if they exist:
