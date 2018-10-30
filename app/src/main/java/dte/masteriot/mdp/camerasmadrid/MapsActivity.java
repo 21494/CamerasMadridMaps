@@ -82,7 +82,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLngBounds bounds = builder.build();
 
         // offset from edges of the map in pixels
-        int padding = 100;
+        int padding = 100; //comentario
 
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(cameraLatLng));
         //mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
