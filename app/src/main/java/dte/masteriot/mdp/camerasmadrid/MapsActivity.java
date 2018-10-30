@@ -19,8 +19,8 @@ import dte.masteriot.mdp.R;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    String coordinates, cameraName;
-    Float latitude, longitude;
+    String coordinates, cameraName, loc_coordinates;
+    Float latitude, longitude, loc_latitude, loc_longitude;
     RadioGroup radGrp;
 
     @Override
@@ -32,6 +32,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Intent i = getIntent();
         coordinates = i.getStringExtra("coordinates");
         cameraName = i.getStringExtra("name");
+        loc_coordinates = i.getStringExtra("location");
 
         radGrp = findViewById(R.id.grupoRadioMapType);
 
@@ -39,7 +40,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         longitude = Float.parseFloat(coord[0]);
         latitude  = Float.parseFloat(coord[1]);
 
-        Toast.makeText(this, "Latitude: " + coord[1] + " Longitude: " + coord[0], Toast.LENGTH_SHORT).show();
+        String[]loc_coord = coordinates.split(","); // coord[0] --> longitude, coord[1] --> latitude
+        loc_longitude = Float.parseFloat(loc_coord[0]);
+        loc_latitude  = Float.parseFloat(loc_coord[1]);
+
+        //Toast.makeText(this, "Latitude: " + coord[1] + " Longitude: " + coord[0], Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Latitude: " + loc_coord[1] + " Longitude: " + loc_coord[0], Toast.LENGTH_SHORT).show();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -61,12 +67,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 
-        LatLng cameraLatLng = new LatLng(latitude, longitude);
+        //LatLng cameraLatLng = new LatLng(latitude, longitude);
+        LatLng cameraLatLng = new LatLng(loc_latitude, loc_longitude);
+        LatLng locationLatLng = new LatLng(loc_latitude, loc_longitude);
 
         Marker mk = mMap.addMarker(new MarkerOptions().position(cameraLatLng).title(cameraName));
         mk.showInfoWindow(); // Shows the name of the camera in the marker
         mMap.moveCamera(CameraUpdateFactory.newLatLng(cameraLatLng));
         mMap.animateCamera( CameraUpdateFactory.zoomTo( 17.0f ) );
+        Marker mk_loc = mMap.addMarker(new MarkerOptions().position(locationLatLng).title("Yo"));
 
         radGrp.setOnCheckedChangeListener(new radioGroupCheckedChanged() );
     }

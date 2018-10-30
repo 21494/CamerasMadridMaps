@@ -174,6 +174,7 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
         // selected camera:
         i.putExtra("coordinates", dataModel.getCameraCoordinatesAtPosition( selected_position ) );
         i.putExtra("name", dataModel.getCameraNameAtPosition(selected_position));
+        i.putExtra("loc_coordinates", String.valueOf(location.getLatitude()) + String.valueOf(location.getLongitude()) );
         startActivity(i);
     }
 
