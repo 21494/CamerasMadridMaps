@@ -356,7 +356,7 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
         protected  void onPreExecute()
         {
             listView.setEnabled(false); // disable selection while the image is being downloaded.
-            imageView.setImageResource(R.drawable.wait); // show the "wait" sign
+            imageView.setImageResource(R.drawable.loading); // show the "LOADING" sign
         }
 
         @Override

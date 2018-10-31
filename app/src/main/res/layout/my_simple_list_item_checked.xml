@@ -21,13 +21,17 @@
 
 <CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/text1"
-    android:layout_width="match_parent"
+    android:layout_width="350dp"
     android:layout_height="?android:attr/listPreferredItemHeightSmall"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginTop="10dp"
     android:checkMark="?android:attr/textCheckMark"
+    android:checked="true"
     android:gravity="center_vertical"
     android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+    android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
+    android:paddingRight="?android:attr/listPreferredItemPaddingRight"
     android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-    android:textAppearance="?android:attr/textAppearanceListItemSmall"
-    android:textColor="@android:color/holo_blue_light"
-    android:textSize="14sp"
-    android:textStyle="bold" />
+    android:textAppearance="@style/TextAppearance.AppCompat"
+    android:visibility="visible" />
+

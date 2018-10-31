@@ -1,22 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
     android:gravity="center_horizontal"
+    android:orientation="vertical"
     tools:context="dte.masteriot.mdp.camerasmadrid.MainActivity">
 
-    <ListView  android:id="@+id/listView"
+    <!--
+    <android.support.design.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_marginBottom="5dp"/>
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        >
 
+        -->
+
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_marginBottom="5dp" />
+    <!--
+    </android.support.design.card.MaterialCardView>
+    -->
+    <!--
     <ImageView android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:src="@mipmap/logoiotmaster"
         android:onClick="imgOnClick"/>
+    -->
+
+    <!-- GIF INCLUDED CAMERA MOVING INSTEAD OF UPM LOGO -->
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@android:color/transparent"
+        android:src="@drawable/camera" />
+
 
 </LinearLayout>
