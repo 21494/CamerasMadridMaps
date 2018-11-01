@@ -6,6 +6,8 @@
     <item android:id="@+id/search_nearest_camera"
         android:title="Search nearest camera"
         android:icon="@android:drawable/ic_menu_mylocation"
+        android:checkable="true"
+        android:checked="false"
         android:onClick="onClickNearestCamera"
         app:showAsAction="always"
         >

@@ -81,6 +81,9 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
     private boolean permisosLoc = false;
     private boolean mRequestingLocationUpdates = false;
 
+    //Nearest camera enabled
+    private boolean nearestCamEnabled = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -211,6 +214,7 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
         //Camera id
         int i = 0, iCam = 0;
 
+        nearestCamEnabled = !nearestCamEnabled; //al pulsar el boton cambia el estado. Quiza deberia hacerse leyendo el atributo checked
         getLoc();
         locLng = location.getLongitude();
         locLat = location.getLatitude();
@@ -228,7 +232,15 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
             }
         }
 
-        Toast.makeText(this, "La camara mas cercana a ti esta en : " + dataModel.getCameraNameAtPosition(iCam), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "La camara mas cercana a ti esta en : " + dataModel.getCameraNameAtPosition(iCam), Toast.LENGTH_SHORT).show();
+        if (nearestCamEnabled==true){
+            adapter.getFilter().filter(dataModel.getCameraNameAtPosition(iCam));
+            Toast.makeText(this, "Mostrando camara mas cercana (pulse de nuevo para ver todas las camaras)", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            adapter.getFilter().filter(null);
+            Toast.makeText(this, "Mostrando todas las camaras", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
