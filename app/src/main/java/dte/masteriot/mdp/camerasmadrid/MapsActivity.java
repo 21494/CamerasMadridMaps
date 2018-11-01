@@ -1,6 +1,7 @@
 package dte.masteriot.mdp.camerasmadrid;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
@@ -35,9 +36,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import dte.masteriot.mdp.R;
 
+import static dte.masteriot.mdp.camerasmadrid.MapsActivity.mMap;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     public static GoogleMap mMap;
+    public static Resources res;
     String coordinates, cameraName, location;
     Float latitude, longitude, loc_latitude, loc_longitude;
     RadioGroup radGrp;
@@ -49,6 +53,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
 
         //Getting the Intent and its extras:
+        res = getResources();
         Intent i = getIntent();
         coordinates = i.getStringExtra("coordinates");
         cameraName = i.getStringExtra("name");
@@ -84,7 +89,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
         LatLng cameraLatLng = new LatLng(latitude, longitude);
         LatLng locLatLng = new LatLng(loc_latitude, loc_longitude);
@@ -103,42 +108,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         int padding = 100; //comentario
 
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(cameraLatLng));
-       // mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
-        //mMap.animateCamera( CameraUpdateFactory.zoomTo( 17.0f ) );
-       // mMap.animateCamera( CameraUpdateFactory.newLatLngBounds(bounds, padding) );
+        //mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
+        //mMap.animateCamera( CameraUpdateFactory.newLatLngBounds(bounds, padding) );
+
+        mMap.animateCamera( CameraUpdateFactory.zoomTo(200.0f)  );
+        mMap.animateCamera( CameraUpdateFactory.newLatLngZoom(new LatLng((latitude+loc_latitude)/2,(longitude + loc_longitude)/2), 11.0f ));
 
         getKML task = new getKML();
         task.execute(loc_coord[1], loc_coord[0], coord[1], coord[0], "motorcar", "1" );
         radGrp.setOnCheckedChangeListener(new radioGroupCheckedChanged() );
     }
-    /*
-    public ArrayList<LatLng> parseKML(InputStream inputStream) {
 
-        Document document = null;
-        ArrayList<LatLng> route = new ArrayList<LatLng>();
-
-        try {
-
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setExpandEntityReferences(false); factory.setIgnoringComments(true); factory.setIgnoringElementContentWhitespace(true);
-            DocumentBuilder builder = factory.newDocumentBuilder();
-
-            // Get InputStream for file located in assets folder
-
-            document = builder.parse( inputStream );
-
-            // Process XML document and extract names and image urls
-            String []rawRoute = document.getElementsByTagName("coordinates").item(0).getTextContent().split(" ");
-            for(int i = 0; i < rawRoute.length; i++){
-                String[] coordenadas = rawRoute[i].split(",");
-                route.add(new LatLng(Float.parseFloat(coordenadas[1]), Float.parseFloat(coordenadas[0])));
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return route;
-    }*/
 
     // Listener related to the user choosing a different map type (through the radio buttons)
     class radioGroupCheckedChanged implements RadioGroup.OnCheckedChangeListener {
@@ -159,12 +139,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 }
 
-class getKML extends AsyncTask<String, Void, InputStream>
+class getKML extends AsyncTask<String, Void, ArrayList<LatLng>>
 {
     @Override
-    protected InputStream doInBackground(String... param) {
+    protected ArrayList<LatLng> doInBackground(String... param) {
 
-        InputStream is = null;
+        ArrayList<LatLng> ruta = null;
         HttpURLConnection urlConnection;
         String contentType;
         try {
@@ -176,25 +156,28 @@ class getKML extends AsyncTask<String, Void, InputStream>
             Log.d("getKML","\nSending 'GET' request to URL : " + url);
             Log.d("getKML","Response Code : " + responseCode);
 
-            is = urlConnection.getInputStream();
+            InputStream is = urlConnection.getInputStream();
             urlConnection.disconnect();
+            ruta = parseKML(is);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return is;
+        return ruta;
     }
 
     @Override
-    protected void onPostExecute(InputStream is) {
-        super.onPostExecute(is);
+    protected void onPostExecute(ArrayList<LatLng> ruta) {
+        super.onPostExecute(ruta);
 
-        ArrayList<LatLng> ruta = this.parseKML(is);
-        Polyline line;
-        for(int i=0; i < ruta.size(); i++) {
-            line = MapsActivity.mMap.addPolyline(new PolylineOptions().add(ruta.get(i)).width(5).color(Color.BLUE));
+        PolylineOptions polyline = new PolylineOptions();
+        for(int i=0; i < ruta.size()-1; i++) {
+            polyline.add(ruta.get(i), ruta.get(i+1));
         }
-        MapsActivity.mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+        polyline.color(MapsActivity.res.getColor(R.color.colorPrimaryDark));
+        Polyline line = mMap.addPolyline(polyline);
+
     }
     
 
@@ -218,7 +201,6 @@ class getKML extends AsyncTask<String, Void, InputStream>
             for(int i = 0; i < rawRoute.length -1; i++){
                 coordenadas = rawRoute[i].split(",");
                 route.add(new LatLng(Float.parseFloat(coordenadas[1]), Float.parseFloat(coordenadas[0])));
-
             }
 
         } catch (Exception e) {
