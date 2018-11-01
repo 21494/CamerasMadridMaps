@@ -358,6 +358,7 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
 
                     // Process XML document and extract names and image urls
                     NodeList placemarkList = document.getElementsByTagName("Placemark");
+                    dataModel.clearCameraData();
                     for (int i = 0; i < placemarkList.getLength(); ++i)
                     {
                         Element placemark = (Element) placemarkList.item(i);

@@ -16,6 +16,10 @@ class DataModel {
         camDataArray.add(camData);
     }
 
+    void clearCameraData() {
+        camDataArray.clear();
+    }
+
     // Get only the camera names as an ArrayList:
     ArrayList<String> getCameraListNames() {
         ArrayList<String> cameraListNames = new ArrayList<>();
