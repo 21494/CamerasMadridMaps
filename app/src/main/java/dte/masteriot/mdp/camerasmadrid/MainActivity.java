@@ -159,6 +159,12 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
         }
     }
 
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+            Toast.makeText(this, "¡Pásalo bien!", Toast.LENGTH_SHORT).show();
+    }
+
     ///////////////////////////////////////////////////////////
     // Search Menu ////////////////////////////////////////////
     ///////////////////////////////////////////////////////////
@@ -184,6 +190,47 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
         return super.onCreateOptionsMenu(menu);
     }
 
+    ///////////////////////////////////////////////////////////
+    // Nearest Camera onClick Listener/////////////////////////
+    ///////////////////////////////////////////////////////////
+    public void onClickNearestCamera(MenuItem item)
+    {
+        //Current location
+        double locLng = 0;
+        double locLat = 0;
+
+        //Camera location
+        String[] camCoord = null;
+        double camLng = 0;
+        double camLat = 0;
+
+        //Distance
+        double distanceToCamera = 0;
+        double minDistance = 999; //valor alto que luego se actualiza con valores tipicamente menores que 1
+
+        //Camera id
+        int i = 0, iCam = 0;
+
+        getLoc();
+        locLng = location.getLongitude();
+        locLat = location.getLatitude();
+        String locationString = String.valueOf(locLng) + "," + String.valueOf(locLat);
+        //Toast.makeText(this, "location: " + locationString, Toast.LENGTH_SHORT).show();
+
+        for (i=1; i < dataModel.camDataArray.size() ; i++){
+            camCoord = dataModel.getCameraCoordinatesAtPosition(i).split(",");
+            camLng = Double.parseDouble(camCoord[0]);
+            camLat  = Double.parseDouble(camCoord[1]);
+            distanceToCamera = (camLng - locLng)*(camLng - locLng) + (camLat - locLat)*(camLat - locLat);
+            if ( distanceToCamera < minDistance ){
+                minDistance = distanceToCamera;
+                iCam = i;
+            }
+        }
+
+        Toast.makeText(this, "La camara mas cercana a ti esta en : " + dataModel.getCameraNameAtPosition(iCam), Toast.LENGTH_SHORT).show();
+
+    }
 
     ///////////////////////////////////////////////////////////
     // Listeners //////////////////////////////////////////////
