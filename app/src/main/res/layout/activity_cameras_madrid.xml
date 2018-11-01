@@ -24,15 +24,6 @@
         android:layout_height="350dp"
         android:layout_marginBottom="5dp" />
 
-    <ImageButton
-        android:id="@+id/imageButton3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/background_light"
-        android:onClick="imgOnClick"
-        android:scaleType="fitEnd"
-        app:srcCompat="@drawable/googleg_standard_color_18" />
-
     <!--
     </android.support.design.card.MaterialCardView>
     -->

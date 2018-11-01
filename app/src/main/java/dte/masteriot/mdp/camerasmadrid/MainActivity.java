@@ -402,17 +402,11 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
                 InputStream is = urlConnection.getInputStream();
 
                 // Content type should be "image/*"
-                /*Log.d("IMAGEN","tipo: "+contentType);
-                Log.d("IMAGEN","RESPUESTA:  "+urlConnection.getResponseCode());
-                Log.d("IMAGEN","RESPUESTA:  "+url.toString());*/
                 if ( contentType.indexOf( "image" ) != -1 ) { // If it is an image
-
                     bitmap = BitmapFactory.decodeStream( is );
                 } else {
                     error = true;
                     errorMessage = contentType + " not processed";
-                    imageView.setImageResource(R.drawable.work);
-
                 }
 
                 urlConnection.disconnect();
@@ -429,11 +423,12 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
         protected void onPostExecute(Bitmap bitmap) {
             if ( error ) {
                 Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                imageView.setImageResource(R.drawable.work);
             } else {
+
                 loaded_cam_image = bitmap;
                 imageView.setImageBitmap(loaded_cam_image);
                 listView.setEnabled(true); // Enable again the list.
-
             }
         }
     }
