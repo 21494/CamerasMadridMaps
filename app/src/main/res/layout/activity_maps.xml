@@ -26,6 +26,7 @@
             android:id="@+id/typeMap"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:checked="true"
             android:text="@string/map"
             android:textColor="@color/colorAccent"
             android:textStyle="bold" />
@@ -34,9 +35,8 @@
             android:id="@+id/typeSatellite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="true"
-            android:textColor="@color/colorAccent"
             android:text="@string/satellite"
+            android:textColor="@color/colorAccent"
             android:textStyle="bold" />
 
         <RadioButton

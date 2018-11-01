@@ -35,6 +35,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import dte.masteriot.mdp.R;
 
+import static dte.masteriot.mdp.camerasmadrid.MapsActivity.mMap;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     public static GoogleMap mMap;
@@ -84,7 +86,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
         LatLng cameraLatLng = new LatLng(latitude, longitude);
         LatLng locLatLng = new LatLng(loc_latitude, loc_longitude);
@@ -105,40 +107,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(cameraLatLng));
        // mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
         //mMap.animateCamera( CameraUpdateFactory.zoomTo( 17.0f ) );
-       // mMap.animateCamera( CameraUpdateFactory.newLatLngBounds(bounds, padding) );
+        mMap.animateCamera( CameraUpdateFactory.newLatLngBounds(bounds, padding) );
 
         getKML task = new getKML();
         task.execute(loc_coord[1], loc_coord[0], coord[1], coord[0], "motorcar", "1" );
         radGrp.setOnCheckedChangeListener(new radioGroupCheckedChanged() );
     }
-    /*
-    public ArrayList<LatLng> parseKML(InputStream inputStream) {
 
-        Document document = null;
-        ArrayList<LatLng> route = new ArrayList<LatLng>();
-
-        try {
-
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setExpandEntityReferences(false); factory.setIgnoringComments(true); factory.setIgnoringElementContentWhitespace(true);
-            DocumentBuilder builder = factory.newDocumentBuilder();
-
-            // Get InputStream for file located in assets folder
-
-            document = builder.parse( inputStream );
-
-            // Process XML document and extract names and image urls
-            String []rawRoute = document.getElementsByTagName("coordinates").item(0).getTextContent().split(" ");
-            for(int i = 0; i < rawRoute.length; i++){
-                String[] coordenadas = rawRoute[i].split(",");
-                route.add(new LatLng(Float.parseFloat(coordenadas[1]), Float.parseFloat(coordenadas[0])));
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return route;
-    }*/
 
     // Listener related to the user choosing a different map type (through the radio buttons)
     class radioGroupCheckedChanged implements RadioGroup.OnCheckedChangeListener {
@@ -190,11 +165,15 @@ class getKML extends AsyncTask<String, Void, InputStream>
         super.onPostExecute(is);
 
         ArrayList<LatLng> ruta = this.parseKML(is);
-        Polyline line;
-        for(int i=0; i < ruta.size(); i++) {
-            line = MapsActivity.mMap.addPolyline(new PolylineOptions().add(ruta.get(i)).width(5).color(Color.BLUE));
+        PolylineOptions polyline = new PolylineOptions();
+        for(int i=0; i < ruta.size()-1; i++) {
+            polyline.add(ruta.get(i), ruta.get(i+1)).width(5).color(R.color.colorAccent);
         }
-        MapsActivity.mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        Polyline line = mMap.addPolyline(polyline);
+        /*Polyline line2 = mMap.addPolyline(new PolylineOptions()
+                .addAll()
+                .width(5)
+                .color(Color.RED));*/
     }
     
 
