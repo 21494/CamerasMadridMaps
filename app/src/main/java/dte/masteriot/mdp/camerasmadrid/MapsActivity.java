@@ -1,6 +1,7 @@
 package dte.masteriot.mdp.camerasmadrid;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
@@ -40,6 +41,7 @@ import static dte.masteriot.mdp.camerasmadrid.MapsActivity.mMap;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     public static GoogleMap mMap;
+    public static Resources res;
     String coordinates, cameraName, location;
     Float latitude, longitude, loc_latitude, loc_longitude;
     RadioGroup radGrp;
@@ -51,6 +53,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
 
         //Getting the Intent and its extras:
+        res = getResources();
         Intent i = getIntent();
         coordinates = i.getStringExtra("coordinates");
         cameraName = i.getStringExtra("name");
@@ -105,9 +108,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         int padding = 100; //comentario
 
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(cameraLatLng));
-       // mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
-        //mMap.animateCamera( CameraUpdateFactory.zoomTo( 17.0f ) );
-        mMap.animateCamera( CameraUpdateFactory.newLatLngBounds(bounds, padding) );
+        //mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
+        //mMap.animateCamera( CameraUpdateFactory.newLatLngBounds(bounds, padding) );
+
+        mMap.animateCamera( CameraUpdateFactory.zoomTo(200.0f)  );
+        mMap.animateCamera( CameraUpdateFactory.newLatLngZoom(new LatLng((latitude+loc_latitude)/2,(longitude + loc_longitude)/2), 11.0f ));
 
         getKML task = new getKML();
         task.execute(loc_coord[1], loc_coord[0], coord[1], coord[0], "motorcar", "1" );
@@ -134,12 +139,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 }
 
-class getKML extends AsyncTask<String, Void, InputStream>
+class getKML extends AsyncTask<String, Void, ArrayList<LatLng>>
 {
     @Override
-    protected InputStream doInBackground(String... param) {
+    protected ArrayList<LatLng> doInBackground(String... param) {
 
-        InputStream is = null;
+        ArrayList<LatLng> ruta = null;
         HttpURLConnection urlConnection;
         String contentType;
         try {
@@ -151,29 +156,28 @@ class getKML extends AsyncTask<String, Void, InputStream>
             Log.d("getKML","\nSending 'GET' request to URL : " + url);
             Log.d("getKML","Response Code : " + responseCode);
 
-            is = urlConnection.getInputStream();
+            InputStream is = urlConnection.getInputStream();
             urlConnection.disconnect();
+            ruta = parseKML(is);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return is;
+        return ruta;
     }
 
     @Override
-    protected void onPostExecute(InputStream is) {
-        super.onPostExecute(is);
+    protected void onPostExecute(ArrayList<LatLng> ruta) {
+        super.onPostExecute(ruta);
 
-        ArrayList<LatLng> ruta = this.parseKML(is);
         PolylineOptions polyline = new PolylineOptions();
         for(int i=0; i < ruta.size()-1; i++) {
-            polyline.add(ruta.get(i), ruta.get(i+1)).width(5).color(R.color.colorAccent);
+            polyline.add(ruta.get(i), ruta.get(i+1));
         }
+
+        polyline.color(MapsActivity.res.getColor(R.color.colorPrimaryDark));
         Polyline line = mMap.addPolyline(polyline);
-        /*Polyline line2 = mMap.addPolyline(new PolylineOptions()
-                .addAll()
-                .width(5)
-                .color(Color.RED));*/
+
     }
     
 
@@ -197,7 +201,6 @@ class getKML extends AsyncTask<String, Void, InputStream>
             for(int i = 0; i < rawRoute.length -1; i++){
                 coordenadas = rawRoute[i].split(",");
                 route.add(new LatLng(Float.parseFloat(coordenadas[1]), Float.parseFloat(coordenadas[0])));
-
             }
 
         } catch (Exception e) {

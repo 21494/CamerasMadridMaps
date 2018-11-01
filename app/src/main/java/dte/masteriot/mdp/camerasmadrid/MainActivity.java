@@ -113,6 +113,8 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
         imageView = findViewById(R.id.imageView);
         listView = findViewById(R.id.listView);
 
+        imageView.setClickable(false);
+
         // Recover shared preferences values if they exist:
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         selected_position = sharedPref.getInt(POSITION_KEY, -1);
@@ -366,6 +368,7 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
                     listView.setItemChecked(selected_position, true);
                     listView.smoothScrollToPosition(selected_position);
                     if (loaded_cam_image != null) {
+                        imageView.setClickable(true);
                         imageView.setImageBitmap(loaded_cam_image);
                         // Note we do not download the image again.
                         // This is faster but if the image is outdated it will remain outdated
@@ -424,6 +427,7 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
             if ( error ) {
                 Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
                 imageView.setImageResource(R.drawable.work);
+                listView.setEnabled(true);
             } else {
 
                 loaded_cam_image = bitmap;
