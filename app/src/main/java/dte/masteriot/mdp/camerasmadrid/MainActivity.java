@@ -246,6 +246,19 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
 
     }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.HD:
+                Intent camaraHD = new Intent(MainActivity.this,HogarDigitalCamara.class);
+                //startActivity(camaraHD);
+                Toast.makeText(this, "Nada de momento", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    return true;
+    }
+
     ///////////////////////////////////////////////////////////
     // Listeners //////////////////////////////////////////////
     ///////////////////////////////////////////////////////////
@@ -367,15 +380,19 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
 
                         NodeList descriptionList = placemark.getElementsByTagName("description");
                         Element description = (Element) descriptionList.item(0); // There is just one description item
-                        String cameraURL = description.getTextContent();
+                        String camera = description.getTextContent();
 
                         // Description is a HTML img TAG, it must be parsed to get url
                         // Example:
                         // <description><div align=center><img src=http://informo.munimadrid.es/informo/Camaras/Camara06303.jpg?v=67030
                         // width=300 height=220/><br>PLAZA DE CASTILLA (NORTE)</div></description>
-                        cameraURL = cameraURL.substring(cameraURL.indexOf("http:"));
-                        cameraURL = cameraURL.substring(0, cameraURL.indexOf(".jpg") + 4); // 4 = length of ".jpg"
+                        //cameraURL = cameraURL.substring(cameraURL.indexOf("http:"));
+                        //cameraURL = cameraURL.substring(0, cameraURL.indexOf(".jpg") + 4); // 4 = length of ".jpg"
 
+                        camera = camera.substring(camera.indexOf("s/Camara"));
+                        camera = camera.substring(0, camera.indexOf(".jpg") + 4); // 4 = length of ".jpg"
+                        String cameraURL = "http://informo.munimadrid.es/camera";
+                        cameraURL = cameraURL.concat(camera);
                         // B) Camera Coordinates -> coordString
 
                         NodeList pointList = placemark.getElementsByTagName("Point");

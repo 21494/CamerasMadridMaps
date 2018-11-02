@@ -4,7 +4,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "dte.masteriot.mdp.camerasmadrid"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -15,6 +15,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
     }
 }
 
@@ -31,4 +35,10 @@ dependencies {
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.15'
     implementation 'com.getbase:floatingactionbutton:1.10.1'
     implementation 'com.android.support:design:27.1.1'
+    implementation 'com.github.niqdev:mjpeg-view:1.4.0'
+
 }
+repositories {
+    jcenter()
+}
+
