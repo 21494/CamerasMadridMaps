@@ -95,7 +95,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng locLatLng = new LatLng(loc_latitude, loc_longitude);
 
         Marker mk = mMap.addMarker(new MarkerOptions().position(cameraLatLng).title(cameraName));
-        Marker mk_loc = mMap.addMarker(new MarkerOptions().position(locLatLng).title("Current Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+        Marker mk_loc = mMap.addMarker(new MarkerOptions().position(locLatLng).title("Current Location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
         mk.showInfoWindow(); // Shows the name of the camera in the marker
         mk_loc.showInfoWindow(); // Shows the name of the camera in the marker
 

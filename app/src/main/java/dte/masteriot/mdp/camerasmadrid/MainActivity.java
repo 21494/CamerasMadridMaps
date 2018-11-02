@@ -252,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
         switch(item.getItemId()){
             case R.id.HD:
                 Intent camaraHD = new Intent(MainActivity.this,HogarDigitalCamara.class);
-                //startActivity(camaraHD);
+                startActivity(camaraHD);
                 Toast.makeText(this, "Nada de momento", Toast.LENGTH_SHORT).show();
                 break;
         }
