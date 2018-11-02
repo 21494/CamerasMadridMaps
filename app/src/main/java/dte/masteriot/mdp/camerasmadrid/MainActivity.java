@@ -201,20 +201,20 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
     public void onClickNearestCamera(MenuItem item)
     {
         //Current location
-        double locLng = 0;
-        double locLat = 0;
+        double locLng;
+        double locLat;
 
         //Camera location
-        String[] camCoord = null;
-        double camLng = 0;
-        double camLat = 0;
+        String[] camCoord;
+        double camLng;
+        double camLat;
 
         //Distance
-        double distanceToCamera = 0;
+        double distanceToCamera;
         double minDistance = 999; //valor alto que luego se actualiza con valores tipicamente menores que 1
 
         //Camera id
-        int i = 0, iCam = 0;
+        int i, iCam = 0;
 
         nearestCamEnabled = !nearestCamEnabled; //al pulsar el boton cambia el estado. Quiza deberia hacerse leyendo el atributo checked
         getLoc();
