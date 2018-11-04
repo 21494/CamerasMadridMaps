@@ -10,7 +10,9 @@
         android:id="@+id/map"
         class="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
 
     <RadioGroup
         android:id="@+id/grupoRadioMapType"
@@ -47,4 +49,50 @@
             android:textColor="@color/colorAccent"
             android:textStyle="bold" />
     </RadioGroup>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom|end"
+        android:layout_marginStart="23dp"
+        android:layout_marginBottom="435dp"
+        android:src="@drawable/ic_plus"
+        map:fab_size="normal" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_standard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/standard_23"
+        android:visibility="gone"
+        android:rotation="90"
+        map:fab_size="mini"
+        android:src="@drawable/maps_standard"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_satellite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/standard_23"
+        android:visibility="gone"
+        android:rotation="90"
+        map:fab_size="mini"
+        android:src="@drawable/maps_satellite"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_hybrid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/standard_23"
+        android:visibility="gone"
+        android:rotation="90"
+        map:fab_size="mini"
+        android:src="@drawable/maps_hybrid"/>
+
 </RelativeLayout>

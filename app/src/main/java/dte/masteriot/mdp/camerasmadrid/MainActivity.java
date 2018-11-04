@@ -23,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -126,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
                     sharedPref.getString(BITMAP_FILENAME_KEY, CAMERA_IMAGE_FILENAME));
         }
 
-        dataModel.addCameraData("Getting cameras list... Please wait!!!", "", "");
+        dataModel.addCameraData("Getting cameras list... Please wait!!!", "","", "");
 
         listView.setOnItemClickListener(this);
 
@@ -225,13 +226,17 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
 
         for (i=1; i < dataModel.camDataArray.size() ; i++){
             camCoord = dataModel.getCameraCoordinatesAtPosition(i).split(",");
-            camLng = Double.parseDouble(camCoord[0]);
-            camLat  = Double.parseDouble(camCoord[1]);
-            distanceToCamera = (camLng - locLng)*(camLng - locLng) + (camLat - locLat)*(camLat - locLat);
-            if ( distanceToCamera < minDistance ){
-                minDistance = distanceToCamera;
-                iCam = i;
-            }
+            /*try {*/
+                camLng = Double.parseDouble(camCoord[0]);
+                camLat = Double.parseDouble(camCoord[1]);
+                distanceToCamera = (camLng - locLng) * (camLng - locLng) + (camLat - locLat) * (camLat - locLat);
+                if (distanceToCamera < minDistance) {
+                    minDistance = distanceToCamera;
+                    iCam = i;
+                }
+            /*}
+            catch{
+            }*/
         }
 
         //Toast.makeText(this, "La camara mas cercana a ti esta en : " + dataModel.getCameraNameAtPosition(iCam), Toast.LENGTH_SHORT).show();
@@ -265,9 +270,9 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
 
     // Listener related to the user clicking on a camera of the list (ListView.OnItemClickListener interface):
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        selected_position = position;
+        selected_position = Integer.parseInt(dataModel.getCameraIdFromName(String.valueOf(parent.getAdapter().getItem(position))));
         DownloadImageTask task = new DownloadImageTask();
-        task.execute( dataModel.getCameraURLAtPosition(position) );
+        task.execute( dataModel.getCameraURLAtPosition(selected_position) );
     }
 
     // Listener related to the user clicking on a camera image:
@@ -362,11 +367,11 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
                         document = builder.parse( is );
 
                     } catch (ParserConfigurationException e) {
-                        dataModel.addCameraData(e.toString(), "", "");
+                        dataModel.addCameraData(e.toString(), "","", "");
                     } catch (SAXException e) {
-                        dataModel.addCameraData(e.toString(), "", "");
+                        dataModel.addCameraData(e.toString(), "","", "");
                     } catch (IOException e) {
-                        dataModel.addCameraData(e.toString(), "", "");
+                        dataModel.addCameraData(e.toString(), "","", "");
                     }
 
                     // Process XML document and extract names and image urls
@@ -410,7 +415,7 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
                         String cameraName = values.item(0).getTextContent();
 
                         // Add the camera to the data model with the three informations A, B and C:
-                        dataModel.addCameraData(cameraName, coordString, cameraURL);
+                        dataModel.addCameraData(String.valueOf(i), cameraName, coordString, cameraURL);
                     }
                 }
                 else {

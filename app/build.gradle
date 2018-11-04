@@ -36,7 +36,7 @@ dependencies {
     implementation 'com.getbase:floatingactionbutton:1.10.1'
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.github.niqdev:mjpeg-view:1.4.0'
-
+    implementation 'com.github.clans:fab:1.6.2'
 }
 repositories {
     jcenter()

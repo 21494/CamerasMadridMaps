@@ -4,11 +4,15 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -47,10 +51,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     RadioGroup radGrp;
     String []loc_coord;
     String []coord;
+    private static boolean isFabOpen = false;
+    private FloatingActionButton fab_main;
+    private FloatingActionButton fab_standard;
+    private FloatingActionButton fab_satellite;
+    private FloatingActionButton fab_hybrid;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        fab_main = findViewById(R.id.fab_main);
+        fab_standard = findViewById(R.id.fab_standard);
+        fab_satellite = findViewById(R.id.fab_satellite);
+        fab_hybrid = findViewById(R.id.fab_hybrid);
+
+        fab_main.setOnClickListener(new MainOnClickListener());
+        fab_standard.setOnClickListener(new StandardOnClickListener());
+        fab_satellite.setOnClickListener(new SatelliteOnClickListener());
+        fab_hybrid.setOnClickListener(new HybridOnClickListener());
 
         //Getting the Intent and its extras:
         res = getResources();
@@ -75,6 +95,82 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
+
+    class MainOnClickListener implements View.OnClickListener
+    {
+        @Override
+            public void onClick(View view) {
+                if (!isFabOpen) {
+                    ShowFabMenu();
+                } else {
+                    CloseFabMenu();
+                }
+            }
+    }
+
+    class StandardOnClickListener implements View.OnClickListener
+    {
+        @Override
+        public void onClick(View view) {
+            CloseFabMenu();
+            Toast.makeText(MapsActivity.this, "Metodo para pasar a mapa standard ", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    class SatelliteOnClickListener implements View.OnClickListener
+    {
+        @Override
+        public void onClick(View view) {
+            CloseFabMenu();
+            Toast.makeText(MapsActivity.this, "Metodo para pasar a mapa satelite ", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    class HybridOnClickListener implements View.OnClickListener
+    {
+        @Override
+        public void onClick(View view) {
+            CloseFabMenu();
+            Toast.makeText(MapsActivity.this, "Metodo para pasar a mapa hibrido ", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void ShowFabMenu()
+    {
+        isFabOpen = true;
+        fab_standard.setVisibility(View.VISIBLE);
+        fab_satellite.setVisibility(View.VISIBLE);
+        fab_hybrid.setVisibility(View.VISIBLE);
+        fab_main.animate().rotation(135f);
+        fab_standard.animate()
+                .translationY(getResources().getDimension(R.dimen.standard_55))
+                .rotation(0f);
+        fab_satellite.animate()
+                .translationY(2*getResources().getDimension(R.dimen.standard_55))
+                .rotation(0f);
+        fab_hybrid.animate()
+                .translationY(3*getResources().getDimension(R.dimen.standard_55))
+                .rotation(0f);
+    }
+
+    private void CloseFabMenu()
+    {
+        isFabOpen = false;
+        fab_main.animate().rotation(0f);
+        fab_standard.animate()
+                .translationY(0f)
+                .rotation(90f);
+        fab_satellite.animate()
+                .translationY(0f)
+                .rotation(90f);
+        fab_hybrid.animate()
+                .translationY(0f)
+                .rotation(90f);
+        fab_standard.setVisibility(View.GONE);
+        fab_satellite.setVisibility(View.GONE);
+        fab_hybrid.setVisibility(View.GONE);
+
     }
 
     /**
@@ -208,4 +304,10 @@ class getKML extends AsyncTask<String, Void, ArrayList<LatLng>>
         }
         return route;
     }
+
+    ///////////////////////////////////////////////////////////
+    // Floating menu //////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
+
+
 }

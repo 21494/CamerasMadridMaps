@@ -11,8 +11,8 @@ class DataModel {
     }
 
     // Add the data for a new camera to the ArrayList:
-    void addCameraData(String n, String c, String u) {
-        CameraData camData = new CameraData(n, c, u);
+    void addCameraData(String i, String n, String c, String u) {
+        CameraData camData = new CameraData(i, n, c, u);
         camDataArray.add(camData);
     }
 
@@ -29,8 +29,18 @@ class DataModel {
         return cameraListNames;
     }
 
-    // Getters for a camera's data at a specific position:
+    String getCameraIdFromName(String n) {
+        String error = "0";
+        for( int i = 0; i < camDataArray.size(); i++) {
+            if ( n == getCameraNameAtPosition(i)){
+                return getCameraId(i);
+            }
+        }
+        return error;
+    }
 
+    // Getters for a camera's data at a specific position:
+    String getCameraId(int item) { return camDataArray.get(item).id; }
     String getCameraNameAtPosition(int item) {
         return camDataArray.get(item).name;
     }
@@ -43,12 +53,14 @@ class DataModel {
 }
 
 class CameraData {
+    String id;
     String name;
     String coordinates;
     String URL;
 
     // Constructor:
-    CameraData(String n, String c, String u) {
+    CameraData(String i, String n, String c, String u) {
+        id = i;
         name = n;
         coordinates = c;
         URL = u;
