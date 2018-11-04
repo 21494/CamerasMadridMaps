@@ -20,7 +20,9 @@ import com.google.android.gms.maps.model.LatLng;
 
 
 import java.io.InputStream;
+import java.net.Authenticator;
 import java.net.HttpURLConnection;
+import java.net.PasswordAuthentication;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -32,12 +34,7 @@ public class HogarDigitalCamara extends AppCompatActivity {
     private static final int TIMEOUT = 5;
 
     MjpegView mjpegView;
-    private Button up;
-    private Button down;
-    private Button left;
-    private Button right;
-    private Button zoomout;
-    private Button zoomin;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,12 +42,7 @@ public class HogarDigitalCamara extends AppCompatActivity {
         setContentView(R.layout.activity_hogar_digital_camara);
         MjpegView mjpegView = findViewById(R.id.video);
 
-        up = (Button) findViewById(R.id.up);
-        down = (Button) findViewById(R.id.down);
-        /*left = (Button) findViewById(R.id.left);
-        right = (Button) findViewById(R.id.right);
-        zoomin = (Button) findViewById(R.id.zoomin);
-        zoomout = (Button) findViewById(R.id.zoomout);*/
+        autoIris();
 
         Mjpeg.newInstance()
                 .open("http://hdcamera.etsist.upm.es/axis-cgi/mjpg/video.cgi", TIMEOUT)
@@ -87,6 +79,15 @@ public class HogarDigitalCamara extends AppCompatActivity {
         CameraActions task = new CameraActions();
         task.execute( "rzoom=-2500" );
     }
+    public void onClickHome(View view){
+        CameraActions task = new CameraActions();
+        task.execute( "move=home" );
+    }
+
+    public void autoIris(){
+        CameraActions task = new CameraActions();
+        task.execute( "autoiris=on" );
+    }
 
 
 
@@ -109,12 +110,13 @@ class CameraActions extends AsyncTask<String, Void, Void>{
     protected Void doInBackground(String... strings) {
         HttpURLConnection urlConnection = null;
         try {
+            Authenticator.setDefault (new Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication ("masteriot", "pasalobien".toCharArray());
+                }
+            });
             URL url = new URL("http://hdcamera.etsist.upm.es/axis-cgi/com/ptz.cgi?camera=1&" + strings[0]);
             urlConnection = (HttpURLConnection) url.openConnection();
-            String userCredentials = "masteriot:pasalobien";
-            String basicAuth = "Basic " + new String(Base64.getEncoder().encode(userCredentials.getBytes()));
-
-            urlConnection.setRequestProperty ("Authorization", basicAuth);
             contentType = urlConnection.getContentType();
 
         }catch (Exception e){

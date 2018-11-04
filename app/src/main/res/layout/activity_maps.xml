@@ -1,19 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:context="dte.masteriot.mdp.camerasmadrid.MapsActivity" >
+    android:layout_height="match_parent"
+    tools:context="dte.masteriot.mdp.camerasmadrid.MapsActivity">
 
-    <fragment
-        android:id="@+id/map"
-        class="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true" />
-
+    <!--
     <RadioGroup
         android:id="@+id/grupoRadioMapType"
         android:layout_width="match_parent"
@@ -48,7 +41,17 @@
             android:text="@string/hybrid"
             android:textColor="@color/colorAccent"
             android:textStyle="bold" />
-    </RadioGroup>
+    </RadioGroup>-->
+
+
+
+        <fragment
+            android:id="@+id/map"
+            class="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_main"
@@ -57,42 +60,115 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom|end"
-        android:layout_marginStart="23dp"
-        android:layout_marginBottom="435dp"
-        android:src="@drawable/ic_plus"
-        map:fab_size="normal" />
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:src="@drawable/layers"
+        map:fab_size="normal"
+        map:layout_constraintStart_toStartOf="parent"
+        map:layout_constraintTop_toTopOf="parent" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_satellite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/standard_23"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:rotation="90"
+            android:src="@drawable/maps_satellite"
+            android:visibility="gone"
+            map:fab_size="mini"
+            map:layout_constraintStart_toStartOf="parent"
+            map:layout_constraintTop_toTopOf="parent" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_hybrid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/standard_23"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:rotation="90"
+            android:src="@drawable/maps_hybrid"
+            android:visibility="gone"
+            map:fab_size="mini"
+            map:layout_constraintStart_toStartOf="parent"
+            map:layout_constraintTop_toTopOf="parent" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_standard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/standard_23"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:rotation="90"
+            android:src="@drawable/maps_standard"
+            android:visibility="gone"
+            map:fab_size="mini"
+            map:layout_constraintStart_toStartOf="parent"
+            map:layout_constraintTop_toTopOf="parent" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_standard"
+        android:id="@+id/fab_route"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/standard_23"
-        android:visibility="gone"
-        android:rotation="90"
-        map:fab_size="mini"
-        android:src="@drawable/maps_standard"/>
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:src="@drawable/route"
+        map:fab_size="normal"
+        map:layout_constraintBottom_toBottomOf="@+id/map"
+        map:layout_constraintEnd_toEndOf="parent" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_satellite"
+        android:id="@+id/fab_car"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/standard_23"
-        android:visibility="gone"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
         android:rotation="90"
+        android:src="@drawable/car"
+        android:visibility="gone"
         map:fab_size="mini"
-        android:src="@drawable/maps_satellite"/>
+        map:layout_constraintBottom_toBottomOf="@+id/map"
+        map:layout_constraintEnd_toEndOf="parent" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_hybrid"
+        android:id="@+id/fab_bicycle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/standard_23"
-        android:visibility="gone"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
         android:rotation="90"
+        android:src="@drawable/bicycle"
+        android:visibility="gone"
         map:fab_size="mini"
-        android:src="@drawable/maps_hybrid"/>
+        map:layout_constraintBottom_toBottomOf="@+id/map"
+        map:layout_constraintEnd_toEndOf="parent" />
 
-</RelativeLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_foot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/standard_23"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:rotation="90"
+        android:src="@drawable/walk"
+        android:visibility="gone"
+        map:fab_size="mini"
+        map:layout_constraintBottom_toBottomOf="@+id/map"
+        map:layout_constraintEnd_toEndOf="parent" />
+
+
+</android.support.constraint.ConstraintLayout>

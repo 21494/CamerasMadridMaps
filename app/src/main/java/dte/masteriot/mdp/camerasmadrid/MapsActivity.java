@@ -1,6 +1,7 @@
 package dte.masteriot.mdp.camerasmadrid;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -41,21 +42,31 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import dte.masteriot.mdp.R;
 
 import static dte.masteriot.mdp.camerasmadrid.MapsActivity.mMap;
+import static java.lang.Math.round;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     public static GoogleMap mMap;
     public static Resources res;
+    public static Polyline line;
+
     String coordinates, cameraName, location;
     Float latitude, longitude, loc_latitude, loc_longitude;
     RadioGroup radGrp;
     String []loc_coord;
     String []coord;
     private static boolean isFabOpen = false;
+    private static boolean isFabRouteOpen = false;
+
     private FloatingActionButton fab_main;
     private FloatingActionButton fab_standard;
     private FloatingActionButton fab_satellite;
     private FloatingActionButton fab_hybrid;
+
+    private FloatingActionButton fab_route;
+    private FloatingActionButton fab_car;
+    private FloatingActionButton fab_bicycle;
+    private FloatingActionButton fab_foot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +77,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         fab_standard = findViewById(R.id.fab_standard);
         fab_satellite = findViewById(R.id.fab_satellite);
         fab_hybrid = findViewById(R.id.fab_hybrid);
+        fab_route = findViewById(R.id.fab_route);
+        fab_car = findViewById(R.id.fab_car);
+        fab_bicycle = findViewById(R.id.fab_bicycle);
+        fab_foot = findViewById(R.id.fab_foot);
 
+        fab_route.setOnClickListener(new RouteOnClickListener());
+        fab_car.setOnClickListener(new CarOnClickListener());
+        fab_bicycle.setOnClickListener(new BicycleOnClickListener());
+        fab_foot.setOnClickListener(new FootOnClickListener());
         fab_main.setOnClickListener(new MainOnClickListener());
         fab_standard.setOnClickListener(new StandardOnClickListener());
         fab_satellite.setOnClickListener(new SatelliteOnClickListener());
@@ -79,7 +98,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         cameraName = i.getStringExtra("name");
         location = i.getStringExtra("location");
 
-        radGrp = findViewById(R.id.grupoRadioMapType);
+        fab_standard.setSelected(true);
 
         coord = coordinates.split(","); // coord[0] --> longitude, coord[1] --> latitude
         loc_coord = location.split(","); // coord[0] --> longitude, coord[1] --> latitude
@@ -95,6 +114,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
     }
 
     class MainOnClickListener implements View.OnClickListener
@@ -109,12 +129,82 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
     }
 
+    private class RouteOnClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            if (!isFabRouteOpen) {
+                ShowFabRouteMenu();
+            } else {
+                CloseFabRouteMenu();
+            }
+        }
+    }
+
+    private void CloseFabRouteMenu() {
+        isFabRouteOpen = false;
+        fab_route.animate().rotation(0f);
+        fab_route.setImageResource(R.drawable.route);
+        fab_car.animate()
+                .translationY(0f)
+                .rotation(90f);
+        fab_bicycle.animate()
+                .translationY(0f)
+                .rotation(90f);
+        fab_foot.animate()
+                .translationY(0f)
+                .rotation(90f);
+        fab_car.setVisibility(View.GONE);
+        fab_bicycle.setVisibility(View.GONE);
+        fab_foot.setVisibility(View.GONE);
+
+    }
+
+    private void ShowFabRouteMenu() {
+        isFabRouteOpen = true;
+        fab_car.setVisibility(View.VISIBLE);
+        fab_bicycle.setVisibility(View.VISIBLE);
+        fab_foot.setVisibility(View.VISIBLE);
+        fab_route.setImageResource(R.drawable.ic_plus);
+        fab_route.animate().rotation(135f);
+        fab_car.animate()
+                .translationY((float)-1.1*getResources().getDimension(R.dimen.standard_55))
+                .rotation(0f);
+        fab_bicycle.animate()
+                .translationY((float)-2.2*getResources().getDimension(R.dimen.standard_55))
+                .rotation(0f);
+        fab_foot.animate()
+                .translationY((float)-3.3*getResources().getDimension(R.dimen.standard_55))
+                .rotation(0f);
+        if (fab_car.isSelected()) {
+            fab_bicycle.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+            fab_car.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryDark)));
+            fab_foot.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+        }
+        else if (fab_bicycle.isSelected()) {
+            fab_bicycle.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryDark)));
+            fab_car.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+            fab_foot.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+        }
+        else if (fab_foot.isSelected()) {
+            fab_bicycle.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+            fab_car.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+            fab_foot.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryDark)));
+        }
+
+    }
+
     class StandardOnClickListener implements View.OnClickListener
     {
         @Override
         public void onClick(View view) {
             CloseFabMenu();
-            Toast.makeText(MapsActivity.this, "Metodo para pasar a mapa standard ", Toast.LENGTH_SHORT).show();
+            mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            fab_standard.setSelected(true);
+            fab_hybrid.setSelected(false);
+            fab_satellite.setSelected(false);
+            Snackbar.make(view, "Normal map view", Snackbar.LENGTH_SHORT)
+                    .show();
         }
     }
 
@@ -123,7 +213,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         public void onClick(View view) {
             CloseFabMenu();
-            Toast.makeText(MapsActivity.this, "Metodo para pasar a mapa satelite ", Toast.LENGTH_SHORT).show();
+            mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+            fab_standard.setSelected(false);
+            fab_hybrid.setSelected(false);
+            fab_satellite.setSelected(true);
+            Snackbar.make(view, "Satellite map view", Snackbar.LENGTH_SHORT)
+                    .show();
         }
     }
 
@@ -132,7 +227,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         public void onClick(View view) {
             CloseFabMenu();
-            Toast.makeText(MapsActivity.this, "Metodo para pasar a mapa hibrido ", Toast.LENGTH_SHORT).show();
+            mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+
+            fab_standard.setSelected(false);
+            fab_hybrid.setSelected(true);
+            fab_hybrid.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+            fab_satellite.setSelected(false);
+            Snackbar.make(view, "Hybrid map view", Snackbar.LENGTH_SHORT)
+                    .show();
         }
     }
 
@@ -142,22 +244,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         fab_standard.setVisibility(View.VISIBLE);
         fab_satellite.setVisibility(View.VISIBLE);
         fab_hybrid.setVisibility(View.VISIBLE);
+        fab_main.setImageResource(R.drawable.ic_plus);
         fab_main.animate().rotation(135f);
         fab_standard.animate()
-                .translationY(getResources().getDimension(R.dimen.standard_55))
+                .translationY((float)1.1*getResources().getDimension(R.dimen.standard_55))
                 .rotation(0f);
         fab_satellite.animate()
-                .translationY(2*getResources().getDimension(R.dimen.standard_55))
+                .translationY((float)2.2*getResources().getDimension(R.dimen.standard_55))
                 .rotation(0f);
         fab_hybrid.animate()
-                .translationY(3*getResources().getDimension(R.dimen.standard_55))
+                .translationY((float)3.3*getResources().getDimension(R.dimen.standard_55))
                 .rotation(0f);
+        if (fab_hybrid.isSelected()) {
+            fab_standard.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+            fab_hybrid.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryDark)));
+            fab_satellite.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+        }
+        else if (fab_standard.isSelected()) {
+            fab_standard.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryDark)));
+            fab_hybrid.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+            fab_satellite.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+        }
+        else if (fab_satellite.isSelected()) {
+            fab_standard.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+            fab_hybrid.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+            fab_satellite.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryDark)));
+        }
+
     }
+
+
 
     private void CloseFabMenu()
     {
         isFabOpen = false;
         fab_main.animate().rotation(0f);
+        fab_main.setImageResource(R.drawable.layers);
         fab_standard.animate()
                 .translationY(0f)
                 .rotation(90f);
@@ -170,6 +292,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         fab_standard.setVisibility(View.GONE);
         fab_satellite.setVisibility(View.GONE);
         fab_hybrid.setVisibility(View.GONE);
+
 
     }
 
@@ -210,39 +333,76 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.animateCamera( CameraUpdateFactory.zoomTo(200.0f)  );
         mMap.animateCamera( CameraUpdateFactory.newLatLngZoom(new LatLng((latitude+loc_latitude)/2,(longitude + loc_longitude)/2), 11.0f ));
 
-        getKML task = new getKML();
-        task.execute(loc_coord[1], loc_coord[0], coord[1], coord[0], "motorcar", "1" );
-        radGrp.setOnCheckedChangeListener(new radioGroupCheckedChanged() );
+        //getKML task = new getKML();
+        //task.execute(loc_coord[1], loc_coord[0], coord[1], coord[0], "motorcar", "1" );
+        //radGrp.setOnCheckedChangeListener(new radioGroupCheckedChanged() );
     }
 
+    private class CarOnClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            CloseFabRouteMenu();
+            if (line != null)
+                line.remove();
+            getKML task = new getKML(v);
+            task.execute(loc_coord[1], loc_coord[0], coord[1], coord[0], "motorcar", "1" );
+            fab_car.setSelected(true);
+            fab_bicycle.setSelected(false);
+            fab_foot.setSelected(false);
 
-    // Listener related to the user choosing a different map type (through the radio buttons)
-    class radioGroupCheckedChanged implements RadioGroup.OnCheckedChangeListener {
-        public void onCheckedChanged(RadioGroup arg0, int id) {
-            switch (id)
-            {
-                case R.id.typeMap:
-                    mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-                    break;
-                case R.id.typeSatellite:
-                    mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-                    break;
-                case R.id.typeHybrid:
-                    mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-                    break;
-            }
         }
     }
+
+    private class BicycleOnClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            CloseFabRouteMenu();
+            if (line != null)
+                line.remove();
+            getKML task = new getKML(v);
+            task.execute(loc_coord[1], loc_coord[0], coord[1], coord[0], "bicycle", "1" );
+            fab_car.setSelected(false);
+            fab_bicycle.setSelected(true);
+            fab_foot.setSelected(false);
+        }
+    }
+
+    private class FootOnClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            CloseFabRouteMenu();
+            getKML task = new getKML(v);
+            if (line != null)
+                line.remove();
+            task.execute(loc_coord[1], loc_coord[0], coord[1], coord[0], "foot", "1" );
+            fab_car.setSelected(false);
+            fab_bicycle.setSelected(false);
+            fab_foot.setSelected(true);
+
+        }
+    }
+
 }
 
 class getKML extends AsyncTask<String, Void, ArrayList<LatLng>>
 {
+    private String contentType;
+    boolean error = false;
+    private String errorMessage;
+
+    private View rootView;
+
+    public getKML(View rootView) {
+
+        this.rootView = rootView;
+    }
+
     @Override
     protected ArrayList<LatLng> doInBackground(String... param) {
 
         ArrayList<LatLng> ruta = null;
         HttpURLConnection urlConnection;
-        String contentType;
+
         try {
             URL url = new URL("http://www.yournavigation.org/api/1.0/gosmore.php"+"?format=kml&flat="
                     +param[0]+"&flon="+param[1]+"&tlat="+param[2]+"&tlon="+param[3]+"&v="+param[4]+"&fast="+param[5]);
@@ -251,11 +411,17 @@ class getKML extends AsyncTask<String, Void, ArrayList<LatLng>>
             int responseCode = urlConnection.getResponseCode();
             Log.d("getKML","\nSending 'GET' request to URL : " + url);
             Log.d("getKML","Response Code : " + responseCode);
-
-            InputStream is = urlConnection.getInputStream();
-            urlConnection.disconnect();
-            ruta = parseKML(is);
+            if (responseCode == urlConnection.HTTP_OK) {
+                InputStream is = urlConnection.getInputStream();
+                urlConnection.disconnect();
+                ruta = parseKML(is);
+            } else {
+                error = true;
+                errorMessage = "Error in the request. Server response: " + responseCode;
+            }
         } catch (Exception e) {
+            error = true;
+            errorMessage = e.toString();
             e.printStackTrace();
         }
 
@@ -265,15 +431,20 @@ class getKML extends AsyncTask<String, Void, ArrayList<LatLng>>
     @Override
     protected void onPostExecute(ArrayList<LatLng> ruta) {
         super.onPostExecute(ruta);
+        if (error){
+            Snackbar.make(rootView, errorMessage, Snackbar.LENGTH_SHORT)
+                    .show();
+            Log.d("Error obteniendo ruta. ", errorMessage);
+            return;
+        } else {
+            PolylineOptions polyline = new PolylineOptions();
+            for (int i = 0; i < ruta.size() - 1; i++) {
+                polyline.add(ruta.get(i), ruta.get(i + 1));
+            }
 
-        PolylineOptions polyline = new PolylineOptions();
-        for(int i=0; i < ruta.size()-1; i++) {
-            polyline.add(ruta.get(i), ruta.get(i+1));
+            polyline.color(MapsActivity.res.getColor(R.color.colorPrimaryDark));
+            MapsActivity.line = mMap.addPolyline(polyline);
         }
-
-        polyline.color(MapsActivity.res.getColor(R.color.colorPrimaryDark));
-        Polyline line = mMap.addPolyline(polyline);
-
     }
     
 
@@ -298,6 +469,12 @@ class getKML extends AsyncTask<String, Void, ArrayList<LatLng>>
                 coordenadas = rawRoute[i].split(",");
                 route.add(new LatLng(Float.parseFloat(coordenadas[1]), Float.parseFloat(coordenadas[0])));
             }
+            String distancia = String.format("%.2f", Float.parseFloat(document.getElementsByTagName("distance").
+                    item(0).getTextContent()));
+            String  tiempo_str = document.getElementsByTagName("traveltime").item(0).getTextContent();
+            String tiempo = String.format("%d", round(Float.parseFloat(tiempo_str)/60));
+            Snackbar.make(rootView, "Route calculated in " + tiempo + " min for " + distancia + " km", Snackbar.LENGTH_LONG)
+                    .show();
 
         } catch (Exception e) {
             e.printStackTrace();
