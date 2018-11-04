@@ -10,7 +10,10 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -53,9 +56,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     String []coord;
     private static boolean isFabOpen = false;
     private FloatingActionButton fab_main;
-    private FloatingActionButton fab_standard;
-    private FloatingActionButton fab_satellite;
-    private FloatingActionButton fab_hybrid;
+    private ImageView button_standard;
+    private ImageView button_satellite;
+    private ImageView button_hybrid;
+    private TextView text_standard;
+    private TextView text_satellite;
+    private TextView text_hybrid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,14 +69,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
 
         fab_main = findViewById(R.id.fab_main);
-        fab_standard = findViewById(R.id.fab_standard);
-        fab_satellite = findViewById(R.id.fab_satellite);
-        fab_hybrid = findViewById(R.id.fab_hybrid);
+        button_standard = findViewById(R.id.button_standard);
+        button_satellite = findViewById(R.id.button_satellite);
+        button_hybrid = findViewById(R.id.button_hybrid);
+        text_standard = findViewById(R.id.text_standard);
+        text_satellite = findViewById(R.id.text_satellite);
+        text_hybrid = findViewById(R.id.text_hybrid);
 
         fab_main.setOnClickListener(new MainOnClickListener());
-        fab_standard.setOnClickListener(new StandardOnClickListener());
-        fab_satellite.setOnClickListener(new SatelliteOnClickListener());
-        fab_hybrid.setOnClickListener(new HybridOnClickListener());
+        button_standard.setOnClickListener(new StandardOnClickListener());
+        button_satellite.setOnClickListener(new SatelliteOnClickListener());
+        button_hybrid.setOnClickListener(new HybridOnClickListener());
 
         //Getting the Intent and its extras:
         res = getResources();
@@ -139,17 +148,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void ShowFabMenu()
     {
         isFabOpen = true;
-        fab_standard.setVisibility(View.VISIBLE);
-        fab_satellite.setVisibility(View.VISIBLE);
-        fab_hybrid.setVisibility(View.VISIBLE);
+        button_standard.setVisibility(View.VISIBLE);
+        button_satellite.setVisibility(View.VISIBLE);
+        button_hybrid.setVisibility(View.VISIBLE);
+        text_standard.setVisibility(View.VISIBLE);
+        text_satellite.setVisibility(View.VISIBLE);
+        text_hybrid.setVisibility(View.VISIBLE);
         fab_main.animate().rotation(135f);
-        fab_standard.animate()
-                .translationY(getResources().getDimension(R.dimen.standard_55))
+        button_standard.animate()
+                .translationY(1*getResources().getDimension(R.dimen.standard_55))
                 .rotation(0f);
-        fab_satellite.animate()
+        button_satellite.animate()
                 .translationY(2*getResources().getDimension(R.dimen.standard_55))
                 .rotation(0f);
-        fab_hybrid.animate()
+        button_hybrid.animate()
                 .translationY(3*getResources().getDimension(R.dimen.standard_55))
                 .rotation(0f);
     }
@@ -158,19 +170,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         isFabOpen = false;
         fab_main.animate().rotation(0f);
-        fab_standard.animate()
+        button_standard.animate()
                 .translationY(0f)
                 .rotation(90f);
-        fab_satellite.animate()
+        button_satellite.animate()
                 .translationY(0f)
                 .rotation(90f);
-        fab_hybrid.animate()
+        button_hybrid.animate()
                 .translationY(0f)
                 .rotation(90f);
-        fab_standard.setVisibility(View.GONE);
-        fab_satellite.setVisibility(View.GONE);
-        fab_hybrid.setVisibility(View.GONE);
-
+        button_standard.setVisibility(View.GONE);
+        button_satellite.setVisibility(View.GONE);
+        button_hybrid.setVisibility(View.GONE);
+        text_standard.setVisibility(View.GONE);
+        text_satellite.setVisibility(View.GONE);
+        text_hybrid.setVisibility(View.GONE);
     }
 
     /**

@@ -55,44 +55,88 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
         android:layout_gravity="bottom|end"
         android:layout_marginStart="23dp"
         android:layout_marginBottom="435dp"
         android:src="@drawable/ic_plus"
         map:fab_size="normal" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_standard"
+    <ImageView
+        android:id="@+id/button_standard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/standard_23"
+        android:maxHeight="10dp"
+        android:maxWidth="10dp"
         android:visibility="gone"
         android:rotation="90"
-        map:fab_size="mini"
-        android:src="@drawable/maps_standard"/>
+        android:src="@drawable/maps_standard_mini"/>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_satellite"
+    <TextView
+        android:id="@+id/text_standard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/standard_23"
-        android:visibility="gone"
-        android:rotation="90"
-        map:fab_size="mini"
-        android:src="@drawable/maps_satellite"/>
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="77dp"
+        android:layout_marginTop="90dp"
+        android:background="@android:color/white"
+        android:text="Standard"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_hybrid"
+    <ImageView
+        android:id="@+id/button_satellite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/standard_23"
+        android:maxHeight="10dp"
+        android:maxWidth="10dp"
         android:visibility="gone"
         android:rotation="90"
-        map:fab_size="mini"
-        android:src="@drawable/maps_hybrid"/>
+        android:src="@drawable/maps_satellite_mini"/>
+
+    <TextView
+        android:id="@+id/text_satellite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="77dp"
+        android:layout_marginTop="145dp"
+        android:background="@android:color/white"
+        android:text="Satellite"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/button_hybrid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/standard_23"
+        android:maxHeight="10dp"
+        android:maxWidth="10dp"
+        android:visibility="gone"
+        android:rotation="90"
+        android:src="@drawable/maps_hybrid_mini"/>
+
+    <TextView
+        android:id="@+id/text_hybrid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="77dp"
+        android:layout_marginTop="200dp"
+        android:background="@android:color/white"
+        android:text="Hybrid"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
 
 </RelativeLayout>
